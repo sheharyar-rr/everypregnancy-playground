@@ -1,0 +1,50 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/wp-admin/",
+  "preferredVersions": {
+    "php": "8.2",
+    "wp": "latest"
+  },
+  "phpExtensionBundles": ["kitchen-sink"],
+  "features": {
+    "networking": true
+  },
+  "login": true,
+  "steps": [
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "wordpress.org/plugins",
+        "slug": "advanced-custom-fields"
+      },
+      "options": { "activate": true }
+    },
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/sheharyar-rr/everypregnancy-playground/main/everypregnancy-theme.zip"
+      },
+      "options": { "activate": true }
+    },
+    {
+      "step": "unzip",
+      "zipFile": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/sheharyar-rr/everypregnancy-playground/main/everypregnancy-uploads.zip"
+      },
+      "extractToPath": "/wordpress/wp-content/uploads"
+    },
+    {
+      "step": "setSiteOptions",
+      "options": {
+        "blogname": "EveryPregnancy (Agent Build)",
+        "blogdescription": "Clean slate — agent will populate"
+      }
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require_once '/wordpress/wp-load.php'; if (function_exists('acf_get_local_json_files')) { foreach (acf_get_local_json_files() as $key => $path) { $json = json_decode(file_get_contents($path), true); if (is_array($json)) { acf_import_field_group($json); } } } foreach (get_pages(array('post_status' => array('publish','draft','private'))) as $p) { wp_delete_post($p->ID, true); } flush_rewrite_rules(true);"
+    }
+  ]
+}
