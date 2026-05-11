@@ -53,7 +53,7 @@
     },
     {
       "step": "runPHP",
-      "code": "<?php require_once '/wordpress/wp-load.php'; $home = get_page_by_path('home'); if ($home) { update_option('page_on_front', $home->ID); update_option('show_on_front', 'page'); } flush_rewrite_rules(true);"
+      "code": "<?php require_once '/wordpress/wp-load.php'; if (function_exists('acf_get_local_json_files')) { foreach (acf_get_local_json_files() as $key => $path) { $json = json_decode(file_get_contents($path), true); if (is_array($json)) { acf_import_field_group($json); } } } $home = get_page_by_path('home'); if ($home) { update_option('page_on_front', $home->ID); update_option('show_on_front', 'page'); } flush_rewrite_rules(true);"
     }
   ]
 }
