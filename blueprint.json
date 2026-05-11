@@ -1,0 +1,59 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/",
+  "preferredVersions": {
+    "php": "8.2",
+    "wp": "latest"
+  },
+  "phpExtensionBundles": ["kitchen-sink"],
+  "features": {
+    "networking": true
+  },
+  "login": true,
+  "steps": [
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "wordpress.org/plugins",
+        "slug": "advanced-custom-fields"
+      },
+      "options": { "activate": true }
+    },
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/sheharyar-rr/everypregnancy-playground/main/everypregnancy-theme.zip"
+      },
+      "options": { "activate": true }
+    },
+    {
+      "step": "unzip",
+      "zipFile": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/sheharyar-rr/everypregnancy-playground/main/everypregnancy-uploads.zip"
+      },
+      "extractToPath": "/wordpress/wp-content/uploads"
+    },
+    {
+      "step": "importWxr",
+      "file": {
+        "resource": "url",
+        "url": "https://raw.githubusercontent.com/sheharyar-rr/everypregnancy-playground/main/ep-content.xml"
+      }
+    },
+    {
+      "step": "setSiteOptions",
+      "options": {
+        "blogname": "EveryPregnancy",
+        "blogdescription": "A world with every safe pregnancy",
+        "show_on_front": "page",
+        "page_on_front": "2"
+      }
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require_once '/wordpress/wp-load.php'; $home = get_page_by_path('home'); if ($home) { update_option('page_on_front', $home->ID); update_option('show_on_front', 'page'); } flush_rewrite_rules(true);"
+    }
+  ]
+}
